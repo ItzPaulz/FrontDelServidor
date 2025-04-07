@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saludo Personalizado</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6a11cb 0%, #ff69b4 100%);
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 3rem;
+            color: #333;
+        }
+
+        h1 {
+            color: #6a11cb;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin: 1.5rem 0;
+        }
+
+        input {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            width: 250px;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6a11cb;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background: #6a11cb;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        button:hover {
+            background: #4d0c9b;
+            transform: translateY(-2px);
+        }
+
+        #resultado {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-width: 300px;
+            border: 1px solid #eee;
+        }
+
+        .mensaje {
+            color: #6a11cb;
+            font-size: 1.2em;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Saludo Personalizado </h1>
+        <div class="input-group">
+            <input type="text" id="nombre" placeholder="Ingresa tu nombre">
+        </div>
+        <button onclick="obtenerSaludo()">Obtener Saludo</button>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        function obtenerSaludo() {
+            const nombre = document.getElementById('nombre').value || 'Amigo';
+            const url = `http://localhost:8080/greeting?name=${encodeURIComponent(nombre)}`;
+            const resultadoDiv = document.getElementById('resultado');
+            
+            resultadoDiv.innerHTML = '<div class="mensaje">⌛ Cargando...</div>';
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error(`Error: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    resultadoDiv.innerHTML = `
+                        <div class="mensaje">🎉 ¡Hola!</div>
+                        <div class="mensaje">${data.content}</div>
+                        <div style="color: #666; margin-top: 10px;">ID: ${data.id}</div>
+                    `;
+                })
+                .catch(error => {
+                    resultadoDiv.innerHTML = `<div style="color: #ff4444;">❌ Error: ${error.message}</div>`;
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
